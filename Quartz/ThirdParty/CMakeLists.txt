@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 
+project(QuartzDependencies)
+
+include(CMakeAddToFolder)
+
 option(LIBC "..." ON)
 
-project(QuartzDependencies)
 
 if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/luamod/include)
 	message("It seems like the Git Submodules have not been initialised and cloned, they will now be initialised and cloned as required.")
@@ -11,17 +14,14 @@ if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/luamod/include)
 	)
 endif()
 
-add_subdirectory(glad)
-add_subdirectory(SDL2)
-add_subdirectory(luamod)
-add_subdirectory(imgui)
+add_subdirectory_with_folder("QuartzDependencies/Lua" luamod)
 
-set_target_properties(buildvm liblua luajit minilua PROPERTIES FOLDER quartz-dependencies/lua/luajit)
+set_target_properties(buildvm liblua luajit minilua PROPERTIES FOLDER QuartzDependencies/Lua/LuaJIT)
 
-if(WIN32)
-    set_target_properties(wluajit PROPERTIES FOLDER quartz-dependencies/lua/luajit)
+if (WIN32)
+	set_target_properties(wluajit PROPERTIES FOLDER QuartzDependencies/Lua/LuaJIT)
 endif()
 
-set_target_properties(luamod luamod_tests PROPERTIES FOLDER quartz-dependencies/lua)
-set_target_properties(SDL2main SDL2 SDL2-static uninstall PROPERTIES FOLDER quartz-dependencies/sdl2)
-set_target_properties(glad imgui PROPERTIES FOLDER quartz-dependencies)
+add_subdirectory_with_folder("QuartzDependencies/SDL" SDL2)
+add_subdirectory_with_folder("QuartzDependencies/Graphics" glad)
+add_subdirectory_with_folder("QuartzDependencies/Graphics" imgui)
